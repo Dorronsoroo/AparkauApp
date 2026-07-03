@@ -104,7 +104,8 @@ implementation("com.google.firebase:firebase-messaging")   // versión vía BOM
 ### Archivos NUEVOS
 | Archivo | Rol |
 |---------|-----|
-| `notifications/AparkauMessagingService.kt` | Receptor FCM (hereda de `FirebaseMessagingService`). Clase concreta obligatoria; **delega** toda la lógica en `NotificacionService`. Maneja `onNewToken` y `onMessageReceived`. |
+| `model/service/AparkauMessagingService.kt` | **Interfaz** del receptor FCM. |
+| `model/service/impl/AparkauMessagingServiceImpl.kt` | Receptor FCM (hereda de `FirebaseMessagingService` e implementa `AparkauMessagingService`). Clase concreta obligatoria; **delega** toda la lógica en `NotificacionService`. Maneja `onNewToken` y `onMessageReceived`. |
 | `model/service/NotificacionService.kt` | **Interfaz** del servicio de notificaciones. |
 | `model/service/impl/NotificacionServiceImpl.kt` | **Implementación**: crear canal, comprobar permiso, mostrar notificación, registrar/eliminar token (obtiene el token con `FirebaseMessaging.getInstance().token`). |
 | `res/drawable/ic_notification.xml` | Icono monocromo para el *small icon*. |
@@ -123,7 +124,7 @@ implementation("com.google.firebase:firebase-messaging")   // versión vía BOM
 
 ### Patrón de diseño
 Se respeta el patrón del proyecto **interfaz + impl** enlazadas por Hilt en
-`ServiceModule`. `AparkauMessagingService` es la única clase "concreta" porque el
+`ServiceModule`. `AparkauMessagingServiceImpl` es la única clase "concreta" porque el
 sistema Android la instancia directamente, pero no contiene lógica de negocio.
 
 ### Momentos en los que se registra/elimina el token
@@ -253,7 +254,7 @@ FCM (campo `token` del documento) → *Probar*.
 - **Bandeja in‑app**: guardar avisos en una colección `notificaciones` (historial).
 - **UI de permiso**: mensaje explicativo si el usuario rechaza el permiso.
 - **Upgrade de runtime**: Node.js 20 se retira el **2026‑10‑30**; subir a Node 22.
-- **Quitar logs de depuración** (`Log.d`) de `AparkauMessagingService` y
+- **Quitar logs de depuración** (`Log.d`) de `AparkauMessagingServiceImpl` y
   `NotificacionServiceImpl` antes de producción.
 
 ---

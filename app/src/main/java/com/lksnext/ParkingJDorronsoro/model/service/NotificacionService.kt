@@ -2,7 +2,7 @@ package com.lksnext.ParkingJDorronsoro.model.service
 
 /**
  * Encapsula la lógica de notificaciones push (FCM) reutilizable, para mantener
- * el [com.lksnext.ParkingJDorronsoro.notifications.AparkauMessagingService] lo más fino
+ * el [com.lksnext.ParkingJDorronsoro.model.service.impl.AparkauMessagingServiceImpl] lo más fino
  * posible. Sigue el patrón interfaz + impl del resto de servicios del proyecto.
  */
 interface NotificacionService {

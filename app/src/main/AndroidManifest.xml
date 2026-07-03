@@ -29,7 +29,7 @@
 
         <!-- Servicio de Firebase Cloud Messaging -->
         <service
-            android:name=".notifications.AparkauMessagingService"
+            android:name=".model.service.impl.AparkauMessagingServiceImpl"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
