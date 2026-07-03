@@ -1,0 +1,40 @@
+2026-07-03T13:51:21.816802Z I notificaravisosalidatandem: Plazas que bloquean a 36B: 36A.
+2026-07-03T13:51:21.887773Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T13:51:22.168021Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 1 ok, 0 fallos.
+2026-07-03T13:59:36.990586Z I notificaravisosalidatandem: 
+2026-07-03T13:59:37.014375Z I notificaravisosalidatandem: Aviso de salida: solicitante=DWvtlLlpt3WaALX3ujcRL1ErIdi1, plaza=36B.
+2026-07-03T13:59:37.084454Z I notificaravisosalidatandem: Plazas que bloquean a 36B: 36A.
+2026-07-03T13:59:37.143092Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T13:59:37.328379Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 1 ok, 0 fallos.
+2026-07-03T14:01:17.374537Z I notificaravisosalidatandem: 
+2026-07-03T14:01:17.398615Z I notificaravisosalidatandem: Aviso de salida: solicitante=DWvtlLlpt3WaALX3ujcRL1ErIdi1, plaza=36B.
+2026-07-03T14:01:17.437396Z I notificaravisosalidatandem: Plazas que bloquean a 36B: 36A.
+2026-07-03T14:01:17.484520Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T14:01:17.651666Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 1 ok, 0 fallos.
+2026-07-03T17:03:09.267849Z I notificaravisosalidatandem: 
+2026-07-03T17:03:09.303809Z I notificaravisosalidatandem: Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+2026-07-03T17:03:10.648105Z I notificaravisosalidatandem: Default STARTUP TCP probe succeeded after 1 attempt for container "worker" on port 8080.
+2026-07-03T17:03:10.669187Z I notificaravisosalidatandem: Aviso de salida: solicitante=DWvtlLlpt3WaALX3ujcRL1ErIdi1, plaza=42B.
+2026-07-03T17:03:11.318447Z I notificaravisosalidatandem: Plazas que bloquean a 42B: 42A.
+2026-07-03T17:03:11.369769Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T17:03:11.621968Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 2 ok, 0 fallos.
+2026-07-03T17:11:52.012806Z I notificaravisosalidatandem: 
+2026-07-03T17:11:52.033116Z I notificaravisosalidatandem: Aviso de salida: solicitante=DWvtlLlpt3WaALX3ujcRL1ErIdi1, plaza=42B.
+2026-07-03T17:11:52.101762Z I notificaravisosalidatandem: Plazas que bloquean a 42B: 42A.
+2026-07-03T17:11:52.156194Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T17:11:52.336806Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 2 ok, 0 fallos.
+2026-07-03T17:22:16.797628Z I notificaravisosalidatandem: 
+2026-07-03T17:22:16.819636Z I notificaravisosalidatandem: Aviso de salida: solicitante=DWvtlLlpt3WaALX3ujcRL1ErIdi1, plaza=36B.
+2026-07-03T17:22:16.900617Z I notificaravisosalidatandem: Plazas que bloquean a 36B: 36A.
+2026-07-03T17:22:16.932903Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T17:22:17.123245Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 2 ok, 0 fallos.
+2026-07-03T17:29:36.896835Z I notificaravisosalidatandem: 
+2026-07-03T17:29:36.924513Z I notificaravisosalidatandem: Aviso de salida: solicitante=DWvtlLlpt3WaALX3ujcRL1ErIdi1, plaza=42B.
+2026-07-03T17:29:37.038800Z I notificaravisosalidatandem: Plazas que bloquean a 42B: 42A.
+2026-07-03T17:29:37.083020Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T17:29:37.293021Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 2 ok, 0 fallos.
+2026-07-03T17:33:23.353976Z I notificaravisosalidatandem: 
+2026-07-03T17:33:23.390736Z I notificaravisosalidatandem: Aviso de salida: solicitante=DWvtlLlpt3WaALX3ujcRL1ErIdi1, plaza=42B.
+2026-07-03T17:33:23.462118Z I notificaravisosalidatandem: Plazas que bloquean a 42B: 42A.
+2026-07-03T17:33:23.504181Z I notificaravisosalidatandem: Bloqueadores a avisar (1): fhwAFuJjPeMGU6NCzrX0yBqfE313.
+2026-07-03T17:33:23.721991Z I notificaravisosalidatandem: Push a fhwAFuJjPeMGU6NCzrX0yBqfE313: 2 ok, 0 fallos.

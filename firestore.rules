@@ -1,0 +1,45 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Usuarios: cualquier usuario autenticado puede LEER perfiles (la app
+    // muestra el nombre del ocupante de una plaza). Solo el propio dueño
+    // puede crear/modificar su documento.
+    match /usuarios/{uid} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == uid;
+
+      // Tokens FCM: privados de cada usuario.
+      match /tokens/{tokenId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // Plazas: solo lectura desde la app. La escritura se hace desde consola/admin.
+    match /plazas/{plazaId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Reservas: cualquier autenticado puede leer (la app calcula ocupación) y
+    // crear. Modificar/borrar solo el dueño de la reserva.
+    match /reservas/{reservaId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.resource.data.usuarioId == request.auth.uid;
+      allow update, delete: if request.auth != null
+                            && resource.data.usuarioId == request.auth.uid;
+    }
+
+    // Avisos de salida (SOS tándem): el usuario bloqueado SOLO puede crear su
+    // propio aviso (usuarioId == su uid). Nadie puede leer/editar/borrar: la
+    // Cloud Function los procesa con permisos admin y garantiza el anonimato.
+    match /avisosSalida/{avisoId} {
+      allow create: if request.auth != null
+                    && request.resource.data.usuarioId == request.auth.uid;
+      allow read, update, delete: if false;
+    }
+  }
+}
+

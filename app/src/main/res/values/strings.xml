@@ -1,0 +1,118 @@
+<resources>
+    <string name="app_name">Aparkau</string>
+
+    <!-- Sign Up labels -->
+    <string name="sign_up">Crear cuenta</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellidos">Apellidos</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="repeat_password">Repetir contraseña</string>
+    <string name="already_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <!-- Errors -->
+    <string name="nombre_error">Por favor, introduce tu nombre.</string>
+    <string name="apellidos_error">Por favor, introduce tus apellidos.</string>
+    <string name="email_error">Por favor, introduce un correo electrónico válido.</string>
+    <string name="password_error">La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.</string>
+    <string name="password_match_error">Las contraseñas no coinciden.</string>
+    <string name="generic_error">Ha ocurrido un error. Inténtalo de nuevo.</string>
+    <string name="empty_password_error">La contraseña no puede estar vacía.</string>
+
+    <!-- Login labels -->
+    <string name="login_details">Iniciar sesión</string>
+    <string name="sign_in">Entrar</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="no_account">¿No tienes cuenta? Créala</string>
+    <string name="recovery_email_sent">Se ha enviado un correo de recuperación.</string>
+
+    <!-- Home labels -->
+    <string name="home_welcome">¡Bienvenido a Aparkau!</string>
+    <string name="sign_out">Cerrar sesión</string>
+    <string name="reserve_spot">Reservar plaza</string>
+    <string name="my_reservations">Mis reservas</string>
+    <string name="no_reservations">Todavía no tienes reservas.</string>
+    <string name="eliminar_reserva">Eliminar reserva</string>
+    <string name="eliminar_reserva_confirmacion">¿Seguro que deseas eliminar esta reserva? Esta acción no se puede deshacer.</string>
+    <string name="reserva_eliminada">Reserva eliminada correctamente.</string>
+    <string name="cancelar">Cancelar</string>
+
+    <!-- Aviso salir (SOS tándem) -->
+    <string name="tu_reserva_hoy">Tu reserva de hoy</string>
+    <string name="bloqueado_titulo">Estás bloqueado</string>
+    <string name="bloqueado_subtitulo">El coche de delante ya ha llegado</string>
+    <string name="avisar_salir">Avisar para salir</string>
+    <string name="avisar_salir_footer">Enviaremos un aviso anónimo a quien te bloquea</string>
+    <string name="aviso_enviado">Aviso enviado</string>
+    <string name="aviso_salida_enviado">Aviso enviado. Avisaremos de forma anónima a quien te bloquea.</string>
+
+    <!-- Aviso recibido por el BLOQUEADOR (banner en su tarjeta de reserva) -->
+    <string name="aviso_salida_recibido_titulo">Alguien necesita salir</string>
+    <string name="aviso_salida_recibido_subtitulo">Estás bloqueando una plaza. ¿Puedes mover el coche?</string>
+    <string name="aviso_salida_entendido">Entendido</string>
+
+    <!-- Mi cuenta labels -->
+    <string name="mi_cuenta_title">Mi cuenta</string>
+    <string name="mi_cuenta_datos">Mis datos</string>
+    <string name="guardar_cambios">Guardar cambios</string>
+    <string name="datos_guardados">¡Datos actualizados correctamente!</string>
+    <string name="perfil_label">Perfil</string>
+    <string name="perfil_empleado_habitual">Empleado habitual</string>
+    <string name="perfil_nomada">Nómada</string>
+    <string name="perfil_vip_cliente">Cliente VIP</string>
+    <string name="perfil_prioridad_especial">Prioridad especial</string>
+
+    <!-- Mis coches labels -->
+    <string name="my_cars">Mis coches</string>
+    <string name="mis_coches_title">Mis coches</string>
+    <string name="modelo">Modelo del vehículo</string>
+    <string name="add_vehiculo">Añadir coche</string>
+    <string name="vehiculo_guardado">¡Coche guardado correctamente!</string>
+    <string name="modelo_error">Introduce el modelo del vehículo.</string>
+    <string name="no_vehiculos">Todavía no has registrado coches.</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="selecciona_vehiculo">Selecciona un coche</string>
+    <string name="vehiculo_no_seleccionado_error">Selecciona un coche para la reserva.</string>
+    <string name="sin_coches_reserva">Registra un coche en «Mis coches» antes de reservar.</string>
+
+    <!-- Reserva labels -->
+    <string name="reservas_title">Reservar plaza</string>
+    <string name="matricula">Matrícula del vehículo</string>
+    <string name="reservar">Reservar</string>
+    <string name="garaje_oficina_title">Reserva garajes oficina</string>
+    <string name="parking_pago_title">Reserva parking de pago</string>
+    <string name="back_to_home">Volver al inicio</string>
+    <string name="select_date">Fecha: %1$s</string>
+    <string name="select_start_time">Inicio: %1$s</string>
+    <string name="select_end_time">Fin: %1$s</string>
+    <string name="reserva_resumen">%1$s · %2$s - %3$s</string>
+    <string name="plaza_numero">Plaza %1$s</string>
+    <string name="plaza_tandem_grupo">Plaza Tándem %1$s</string>
+    <string name="dialog_tandem_titulo">¡Un momento! 🚗</string>
+    <string name="dialog_tandem_a_mensaje">La plaza %1$s es de tipo tándem. Si la reservas, la plaza %2$s quedará bloqueada y nadie más podrá usarla mientras dure tu reserva.\n\n¿Quieres continuar?</string>
+    <string name="dialog_tandem_b_mensaje">La plaza %1$s es la interior de un tándem. Ten en cuenta que podría quedar bloqueada si alguien reserva la plaza %2$s.\n\n¿Quieres continuar con la reserva?</string>
+    <string name="dialog_tandem_confirmar">Sí, reservar</string>
+    <string name="dialog_cancelar">Cancelar</string>
+    <string name="no_plazas">No hay plazas disponibles.</string>
+    <string name="reserva_creada">¡Reserva creada correctamente!</string>
+    <string name="reservado_por">Reservado por %1$s</string>
+    <string name="matricula_error">Introduce la matrícula del vehículo.</string>
+    <string name="plaza_no_disponible">Esa plaza ya no está disponible.</string>
+    <string name="fecha_pasada_error">No puedes reservar para una fecha pasada.</string>
+    <string name="fecha_max_error">Solo puedes reservar con un máximo de 7 días de antelación.</string>
+    <string name="hora_invalida_error">La hora de fin debe ser posterior a la de inicio.</string>
+    <string name="duracion_error">La reserva no puede durar más de 9 horas.</string>
+    <string name="tipo_normal">Normal</string>
+    <string name="tipo_electrica">Eléctrica</string>
+    <string name="tipo_moto">Moto</string>
+    <string name="tipo_prioritaria">Prioritaria</string>
+    <string name="tipo_tandem">Tándem</string>
+    <string name="estado_libre">Libre</string>
+    <string name="estado_ocupada">Ocupada</string>
+    <string name="estado_bloqueada">Bloqueada por tándem</string>
+
+    <!-- Notificaciones push -->
+    <string name="notif_channel_tandem_id" translatable="false">tandem_bloqueos</string>
+    <string name="notif_channel_tandem_name">Avisos de plazas tándem</string>
+    <string name="notif_channel_tandem_desc">Avisos cuando tu plaza queda bloqueada o liberada en un tándem.</string>
+</resources>
