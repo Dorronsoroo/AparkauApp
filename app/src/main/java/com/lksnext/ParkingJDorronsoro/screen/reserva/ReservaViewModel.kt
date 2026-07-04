@@ -14,6 +14,7 @@ import com.lksnext.ParkingJDorronsoro.model.service.LogService
 import com.lksnext.ParkingJDorronsoro.model.service.PlazaService
 import com.lksnext.ParkingJDorronsoro.model.service.ReservaService
 import com.lksnext.ParkingJDorronsoro.model.service.UsuarioService
+import com.lksnext.ParkingJDorronsoro.model.service.NotificacionService
 import com.lksnext.ParkingJDorronsoro.model.service.VehiculoService
 import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,7 @@ class ReservaViewModel @Inject constructor(
     private val reservaService: ReservaService,
     private val vehiculoService: VehiculoService,
     private val usuarioService: UsuarioService,
+    private val notificacionService: NotificacionService,
     logService: LogService
 ) : MakeItSoViewModel(logService) {
 
@@ -216,9 +218,14 @@ class ReservaViewModel @Inject constructor(
             )
 
             // 1. Crear la reserva en Firestore
-            reservaService.crearReserva(reserva)
+            val reservaId = reservaService.crearReserva(reserva)
 
-            // 2. Avisar y recargar: la ocupación se recalcula por día a partir de las reservas,
+            // 2. Programar los dos recordatorios locales (sin backend):
+            //    - 30 min antes del inicio
+            //    - 15 min antes del fin
+            notificacionService.programarRecordatorios(reservaId, inicio.toDate().time, fin.toDate().time, plaza.id)
+
+            // 3. Avisar y recargar: la ocupación se recalcula por día a partir de las reservas,
             //    por eso NO marcamos la plaza como OCUPADA de forma global (eso la ocuparía todos los días).
             SnackbarManager.showMessage(AppText.reserva_creada)
             cargarPlazas()

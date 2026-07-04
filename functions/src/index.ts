@@ -151,12 +151,14 @@ async function enviarPushAUsuario(
 
   const tokens = tokensSnap.docs.map((d) => (d.get("token") as string) || d.id);
 
-  // Añadimos SIEMPRE el destinatario y el texto en el propio "data". Enviamos el
-  // mensaje como SOLO-DATOS (sin bloque "notification") para que la app SIEMPRE
-  // pase por onMessageReceived —incluso en segundo plano— y pueda descartar el
-  // aviso si el usuario logueado no es `uidDestino` (evita que un token "heredado"
-  // de otra cuenta muestre la notificación a quien no corresponde). Sigue siendo
-  // anónimo: el destinatario solo ve su PROPIO uid, nunca el del solicitante.
+  // Añadimos SIEMPRE el destinatario y el texto en el propio "data" para que
+  // onMessageReceived pueda descartar el aviso si el usuario logueado no es
+  // `uidDestino` (evita que un token "heredado" de otra cuenta muestre la
+  // notificación a quien no corresponde).
+  // También incluimos el bloque "notification" para que FCM pueda mostrar la
+  // notificación directamente cuando la app está CERRADA (Android 8+ no entrega
+  // mensajes solo-datos a apps eliminadas). El canal debe coincidir con el
+  // creado en la app ("tandem_bloqueos").
   const datosConDestino = {
     ...data,
     uidDestino: uid,
@@ -167,7 +169,17 @@ async function enviarPushAUsuario(
   const respuesta = await getMessaging().sendEachForMulticast({
     tokens,
     data: datosConDestino,
-    android: { priority: "high" },
+    notification: {
+      title: titulo,
+      body: cuerpo,
+    },
+    android: {
+      priority: "high",
+      notification: {
+        channelId: "tandem_bloqueos",
+        defaultSound: true,
+      },
+    },
   });
 
   logger.info(

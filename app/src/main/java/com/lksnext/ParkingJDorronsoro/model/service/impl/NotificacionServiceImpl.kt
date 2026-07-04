@@ -18,6 +18,9 @@ import com.lksnext.ParkingJDorronsoro.model.service.AccountService
 import com.lksnext.ParkingJDorronsoro.model.service.NotificacionService
 import com.lksnext.ParkingJDorronsoro.model.service.UsuarioService
 import com.google.firebase.messaging.FirebaseMessaging
+import android.app.AlarmManager
+import com.lksnext.ParkingJDorronsoro.model.receiver.RecordatorioReceiver
+import com.lksnext.ParkingJDorronsoro.model.worker.RecordatorioFinReservaWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -58,7 +61,7 @@ class NotificacionServiceImpl @Inject constructor(
             .build()
 
         NotificationManagerCompat.from(context)
-            .notify(Random.nextInt(), notificacion)
+            .notify(Random.nextInt(1, Int.MAX_VALUE), notificacion)
     }
 
     override suspend fun registrarToken(token: String) {
@@ -76,6 +79,90 @@ class NotificacionServiceImpl @Inject constructor(
         if (!accountService.hasUser) return
         val token = FirebaseMessaging.getInstance().token.await()
         usuarioService.eliminarTokenFcm(accountService.currentUserId, token)
+    }
+
+    override fun programarRecordatorios(
+        reservaId: String,
+        horaInicioMs: Long,
+        horaFinMs: Long,
+        plazaId: String
+    ) {
+        crearCanalSiNoExiste()
+
+        // --- Recordatorio 1: 30 min antes del INICIO ---
+        val disparoInicio = horaInicioMs -
+                (RecordatorioFinReservaWorker.MINUTOS_ANTES_INICIO * 60 * 1000L)
+        if (disparoInicio > System.currentTimeMillis()) {
+            programarAlarma(
+                requestCode = (RecordatorioFinReservaWorker.TAG_PREFIJO_INICIO + reservaId).hashCode(),
+                triggerAtMs = disparoInicio,
+                titulo = "Tu reserva empieza pronto",
+                cuerpo = "Tu reserva de la plaza $plazaId comienza en ${RecordatorioFinReservaWorker.MINUTOS_ANTES_INICIO} minutos."
+            )
+            Log.d("AparkauFCM", "Recordatorio INICIO programado para reserva $reservaId plaza $plazaId")
+        } else {
+            Log.d("AparkauFCM", "Recordatorio INICIO omitido (ya pasó) para reserva $reservaId")
+        }
+
+        // --- Recordatorio 2: 15 min antes del FIN ---
+        val disparoFin = horaFinMs -
+                (RecordatorioFinReservaWorker.MINUTOS_ANTES_FIN * 60 * 1000L)
+        if (disparoFin > System.currentTimeMillis()) {
+            programarAlarma(
+                requestCode = (RecordatorioFinReservaWorker.TAG_PREFIJO_FIN + reservaId).hashCode(),
+                triggerAtMs = disparoFin,
+                titulo = "Tu reserva termina pronto",
+                cuerpo = "Tu reserva de la plaza $plazaId finaliza en ${RecordatorioFinReservaWorker.MINUTOS_ANTES_FIN} minutos."
+            )
+            Log.d("AparkauFCM", "Recordatorio FIN programado para reserva $reservaId plaza $plazaId")
+        } else {
+            Log.d("AparkauFCM", "Recordatorio FIN omitido (ya pasó) para reserva $reservaId")
+        }
+    }
+
+    override fun cancelarRecordatorios(reservaId: String) {
+        cancelarAlarma((RecordatorioFinReservaWorker.TAG_PREFIJO_INICIO + reservaId).hashCode())
+        cancelarAlarma((RecordatorioFinReservaWorker.TAG_PREFIJO_FIN + reservaId).hashCode())
+    }
+
+    /**
+     * Programa una alarma EXACTA con [AlarmManager]. A diferencia de WorkManager,
+     * setExactAndAllowWhileIdle despierta el dispositivo aunque esté en Doze, por
+     * lo que la notificación llega en el minuto exacto.
+     */
+    private fun programarAlarma(requestCode: Int, triggerAtMs: Long, titulo: String, cuerpo: String) {
+        val alarmManager = context.getSystemService(AlarmManager::class.java) ?: return
+        val pendingIntent = crearPendingIntentAlarma(requestCode, titulo, cuerpo)
+
+        // En Android 12+ (API 31) las alarmas exactas requieren permiso especial.
+        // Si no está concedido, caemos a una alarma inexacta (mejor que nada).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            Log.w("AparkauFCM", "Sin permiso de alarma exacta: se usa alarma aproximada")
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMs, pendingIntent)
+            return
+        }
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMs, pendingIntent)
+    }
+
+    private fun cancelarAlarma(requestCode: Int) {
+        val alarmManager = context.getSystemService(AlarmManager::class.java) ?: return
+        val pendingIntent = crearPendingIntentAlarma(requestCode, null, null)
+        alarmManager.cancel(pendingIntent)
+    }
+
+    private fun crearPendingIntentAlarma(requestCode: Int, titulo: String?, cuerpo: String?): PendingIntent {
+        val intent = Intent(context, RecordatorioReceiver::class.java).apply {
+            action = RecordatorioReceiver.ACTION_RECORDATORIO
+            putExtra(RecordatorioReceiver.EXTRA_NOTIF_ID, requestCode)
+            titulo?.let { putExtra(RecordatorioReceiver.EXTRA_TITULO, it) }
+            cuerpo?.let { putExtra(RecordatorioReceiver.EXTRA_CUERPO, it) }
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     /**

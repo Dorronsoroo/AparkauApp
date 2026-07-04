@@ -71,6 +71,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.compose.material:material-icons-extended")
 
+    // WorkManager: recordatorio local 15 min antes de que termine la reserva
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
+
 
 
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.60")

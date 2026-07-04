@@ -5,6 +5,10 @@
     <!-- Necesario en Android 13+ para poder mostrar notificaciones -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Necesario para programar alarmas EXACTAS (recordatorios de reserva) en Android 12+ -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
     <application
         android:name=".AparkauApp"
         android:allowBackup="true"
@@ -35,6 +39,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <!-- Receptor de recordatorios de reserva (AlarmManager, hora exacta) -->
+        <receiver
+            android:name=".model.receiver.RecordatorioReceiver"
+            android:exported="false" />
 
         <!-- Icono y canal por defecto para notificaciones enviadas desde consola/servidor -->
         <meta-data

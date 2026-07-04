@@ -8,6 +8,7 @@ import com.lksnext.ParkingJDorronsoro.common.snackbar.SnackbarManager
 import com.lksnext.ParkingJDorronsoro.model.service.AccountService
 import com.lksnext.ParkingJDorronsoro.model.service.AvisoSalidaService
 import com.lksnext.ParkingJDorronsoro.model.service.LogService
+import com.lksnext.ParkingJDorronsoro.model.service.NotificacionService
 import com.lksnext.ParkingJDorronsoro.model.service.PlazaService
 import com.lksnext.ParkingJDorronsoro.model.service.ReservaService
 import com.google.firebase.Timestamp
@@ -22,6 +23,7 @@ class HomeViewModel @Inject constructor(
     private val reservaService: ReservaService,
     private val plazaService: PlazaService,
     private val avisoSalidaService: AvisoSalidaService,
+    private val notificacionService: NotificacionService,
     logService: LogService
 ) : MakeItSoViewModel(logService) {
 
@@ -107,6 +109,8 @@ class HomeViewModel @Inject constructor(
 
     fun onEliminarReservaClick(reservaId: String) {
         launchCatching {
+            // Cancelamos los dos recordatorios locales antes de borrar la reserva
+            notificacionService.cancelarRecordatorios(reservaId)
             reservaService.eliminarReserva(reservaId)
             uiState.value = uiState.value.copy(
                 reservas = uiState.value.reservas.filterNot { it.reserva.id == reservaId }

@@ -31,6 +31,34 @@ interface NotificacionService {
      * iniciada. Debe llamarse ANTES de cerrar sesión (mientras aún hay usuario).
      */
     suspend fun eliminarTokenActual()
+
+    /**
+     * Programa DOS notificaciones locales para una reserva:
+     *  - 30 minutos antes de que COMIENCE (horaInicioMs)
+     *  - 15 minutos antes de que FINALICE (horaFinMs)
+     *
+     * Usa AlarmManager (alarmas exactas): no requiere FCM ni Cloud Functions y
+     * despierta el dispositivo a la hora justa aunque esté en modo Doze.
+     * Si ya existían recordatorios para esta reserva (p.ej. tras editarla),
+     * los reemplaza automáticamente.
+     *
+     * @param reservaId    ID de la reserva (clave única de las tareas).
+     * @param horaInicioMs Marca de tiempo Unix (ms) de inicio de la reserva.
+     * @param horaFinMs    Marca de tiempo Unix (ms) de fin de la reserva.
+     * @param plazaId      Identificador de la plaza (p.ej. "36A") para el texto.
+     */
+    fun programarRecordatorios(
+        reservaId: String,
+        horaInicioMs: Long,
+        horaFinMs: Long,
+        plazaId: String
+    )
+
+    /**
+     * Cancela los DOS recordatorios (inicio y fin) de la reserva indicada.
+     * Llamar al eliminar o reasignar la reserva.
+     */
+    fun cancelarRecordatorios(reservaId: String)
 }
 
 

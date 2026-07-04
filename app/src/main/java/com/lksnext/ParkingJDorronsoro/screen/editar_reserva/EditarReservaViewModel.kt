@@ -11,6 +11,7 @@ import com.lksnext.ParkingJDorronsoro.model.Plaza
 import com.lksnext.ParkingJDorronsoro.model.Reserva
 import com.lksnext.ParkingJDorronsoro.model.service.AccountService
 import com.lksnext.ParkingJDorronsoro.model.service.LogService
+import com.lksnext.ParkingJDorronsoro.model.service.NotificacionService
 import com.lksnext.ParkingJDorronsoro.model.service.PlazaService
 import com.lksnext.ParkingJDorronsoro.model.service.ReservaService
 import com.lksnext.ParkingJDorronsoro.model.service.UsuarioService
@@ -32,6 +33,7 @@ class EditarReservaViewModel @Inject constructor(
     private val reservaService: ReservaService,
     private val vehiculoService: VehiculoService,
     private val usuarioService: UsuarioService,
+    private val notificacionService: NotificacionService,
     logService: LogService
 ) : MakeItSoViewModel(logService) {
 
@@ -230,6 +232,9 @@ class EditarReservaViewModel @Inject constructor(
                 horaInicio = inicio,
                 horaFin = fin
             )
+
+            // Reprogramar los dos recordatorios con las nuevas horas (REPLACE cancela los anteriores)
+            notificacionService.programarRecordatorios(reservaId, inicio.toDate().time, fin.toDate().time, plazaId)
 
             SnackbarManager.showMessage(AppText.reserva_actualizada)
             openAndPopUp(AparkauRoutes.HOME_SCREEN, AparkauRoutes.HOME_SCREEN)
