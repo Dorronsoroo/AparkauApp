@@ -1,14 +1,14 @@
-package com.lksnext.ParkingJDorronsoro.screen.reserva
+package com.lksnext.ParkingJDorronsoro.screen.editar_reserva
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import com.lksnext.ParkingJDorronsoro.AparkauRoutes
-import com.lksnext.ParkingJDorronsoro.common.AppText
 import com.lksnext.ParkingJDorronsoro.MakeItSoViewModel
+import com.lksnext.ParkingJDorronsoro.common.AppText
+import com.lksnext.ParkingJDorronsoro.common.snackbar.SnackbarManager
 import com.lksnext.ParkingJDorronsoro.model.EstadoPlaza
-import com.lksnext.ParkingJDorronsoro.model.EstadoReserva
 import com.lksnext.ParkingJDorronsoro.model.Plaza
 import com.lksnext.ParkingJDorronsoro.model.Reserva
-import com.lksnext.ParkingJDorronsoro.common.snackbar.SnackbarManager
 import com.lksnext.ParkingJDorronsoro.model.service.AccountService
 import com.lksnext.ParkingJDorronsoro.model.service.LogService
 import com.lksnext.ParkingJDorronsoro.model.service.PlazaService
@@ -25,7 +25,8 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class ReservaViewModel @Inject constructor(
+class EditarReservaViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val accountService: AccountService,
     private val plazaService: PlazaService,
     private val reservaService: ReservaService,
@@ -34,15 +35,16 @@ class ReservaViewModel @Inject constructor(
     logService: LogService
 ) : MakeItSoViewModel(logService) {
 
-    var uiState = mutableStateOf(ReservaUiState())
+    private val reservaId: String = checkNotNull(savedStateHandle["reservaId"])
+
+    var uiState = mutableStateOf(EditarReservaUiState(reservaId = reservaId))
         private set
 
-    private val matricula get() = uiState.value.matriculaSeleccionada
     private val fecha get() = uiState.value.fecha
     private val horaInicio get() = uiState.value.horaInicio
     private val horaFin get() = uiState.value.horaFin
 
-    // Datos base cargados de Firestore. La ocupación se deriva de estos según el día seleccionado.
+    // Datos base cargados de Firestore.
     private var plazasBase: List<Plaza> = emptyList()
     private var reservasActivas: List<Reserva> = emptyList()
     private val nombreUsuarioCache = mutableMapOf<String, String>()
@@ -53,8 +55,7 @@ class ReservaViewModel @Inject constructor(
     }
 
     init {
-        cargarPlazas()
-        cargarVehiculos()
+        cargarDatos()
     }
 
     fun onVehiculoSelected(newValue: String) {
@@ -63,7 +64,6 @@ class ReservaViewModel @Inject constructor(
 
     fun onFechaChange(newValue: LocalDate) {
         uiState.value = uiState.value.copy(fecha = newValue)
-        // Al cambiar de día recalculamos qué plazas están ocupadas ESE día concreto.
         recalcularParaFecha(newValue)
     }
 
@@ -75,15 +75,45 @@ class ReservaViewModel @Inject constructor(
         uiState.value = uiState.value.copy(horaFin = newValue)
     }
 
+    fun onPlazaSeleccionadaChange(plazaId: String) {
+        uiState.value = uiState.value.copy(plazaSeleccionadaId = plazaId)
+    }
+
     fun onVolverClick(openAndPopUp: (String, String) -> Unit) {
-        // Volvemos a Home recreándolo para que recargue la lista de reservas
         openAndPopUp(AparkauRoutes.HOME_SCREEN, AparkauRoutes.HOME_SCREEN)
     }
 
-    private fun cargarPlazas() {
+    private fun cargarDatos() {
         uiState.value = uiState.value.copy(isLoading = true)
         launchCatching {
             try {
+                // 1. Cargamos la reserva existente para pre-rellenar el formulario
+                val reserva = reservaService.getReserva(reservaId)
+                if (reserva == null) {
+                    SnackbarManager.showMessage(AppText.cargando_reserva_error)
+                    return@launchCatching
+                }
+
+                val zona = ZoneId.systemDefault()
+                val fechaReserva = (reserva.fechaReserva ?: reserva.horaInicio)
+                    ?.toDate()?.toInstant()?.atZone(zona)?.toLocalDate()
+                    ?: LocalDate.now()
+                val horaInicioLocal = reserva.horaInicio
+                    ?.toDate()?.toInstant()?.atZone(zona)?.toLocalTime()
+                    ?: LocalTime.of(8, 0)
+                val horaFinLocal = reserva.horaFin
+                    ?.toDate()?.toInstant()?.atZone(zona)?.toLocalTime()
+                    ?: LocalTime.of(17, 0)
+
+                uiState.value = uiState.value.copy(
+                    plazaSeleccionadaId = reserva.plazaId,
+                    matriculaSeleccionada = reserva.matriculaVehiculo,
+                    fecha = fechaReserva,
+                    horaInicio = horaInicioLocal,
+                    horaFin = horaFinLocal
+                )
+
+                // 2. Cargamos plazas y todas las reservas activas
                 plazasBase = plazaService.getTodasLasPlazas()
                     .sortedWith(
                         compareBy(
@@ -92,24 +122,25 @@ class ReservaViewModel @Inject constructor(
                         )
                     )
 
-                // Cargamos todas las reservas activas (de todos los días) una sola vez.
                 reservasActivas = reservaService.getTodasLasReservasActivas()
 
-                // Precargamos los nombres de los ocupantes para no repetir consultas.
                 reservasActivas
                     .map { it.usuarioId }
                     .filter { it.isNotBlank() && !nombreUsuarioCache.containsKey(it) }
                     .distinct()
-                    .forEach { usuarioId ->
-                        val usuario = usuarioService.getUsuario(usuarioId)
+                    .forEach { uid ->
+                        val usuario = usuarioService.getUsuario(uid)
                         if (usuario != null) {
-                            nombreUsuarioCache[usuarioId] =
-                                "${usuario.nombre} ${usuario.apellidos}".trim()
+                            nombreUsuarioCache[uid] = "${usuario.nombre} ${usuario.apellidos}".trim()
                         }
                     }
 
-                // Calculamos la ocupación para el día seleccionado actualmente.
-                recalcularParaFecha(fecha)
+                // 3. Cargamos vehículos del usuario
+                val vehiculos = vehiculoService.getVehiculos(accountService.currentUserId)
+                uiState.value = uiState.value.copy(vehiculos = vehiculos)
+
+                // 4. Calculamos disponibilidad para la fecha de la reserva
+                recalcularParaFecha(fechaReserva)
             } finally {
                 uiState.value = uiState.value.copy(isLoading = false)
             }
@@ -117,26 +148,21 @@ class ReservaViewModel @Inject constructor(
     }
 
     /**
-     * Deriva el estado de cada plaza (LIBRE / OCUPADA / BLOQUEADA_POR_TANDEM) a partir
-     * de las reservas que caen en el [dia] indicado. Así una reserva del 1 de julio
-     * solo afecta al 1 de julio y no aparece los demás días.
+     * Deriva el estado de cada plaza para [dia], excluyendo la reserva que se está
+     * editando para que su plaza aparezca como LIBRE.
      */
     private fun recalcularParaFecha(dia: LocalDate) {
         val zona = ZoneId.systemDefault()
 
         val reservasDelDia = reservasActivas.filter { reserva ->
+            // Excluimos la reserva que se está editando
+            if (reserva.id == reservaId) return@filter false
             val ts = reserva.fechaReserva ?: reserva.horaInicio
             ts != null && ts.toDate().toInstant().atZone(zona).toLocalDate() == dia
         }
 
-        val plazasOcupadasIds = reservasDelDia
-            .map { it.plazaId }
-            .filter { it.isNotBlank() }
-            .toSet()
+        val plazasOcupadasIds = reservasDelDia.map { it.plazaId }.filter { it.isNotBlank() }.toSet()
 
-        // Bloqueo unidireccional del tándem: una plaza A ocupada bloquea a la plaza B
-        // indicada en su campo `plazaBloqueadaId` (así en Firebase basta con rellenar
-        // ese campo en la plaza A apuntando a la B que bloquea).
         val plazasBloqueadasPorTandem = plazasBase
             .filter { it.id in plazasOcupadasIds && it.plazaBloqueadaId.isNotBlank() }
             .map { it.plazaBloqueadaId }
@@ -164,33 +190,24 @@ class ReservaViewModel @Inject constructor(
         )
     }
 
-    private fun cargarVehiculos() {
-        launchCatching {
-            val vehiculos = vehiculoService.getVehiculos(accountService.currentUserId)
-            // Preseleccionamos el primer coche registrado, si lo hay
-            uiState.value = uiState.value.copy(
-                vehiculos = vehiculos,
-                matriculaSeleccionada = vehiculos.firstOrNull()?.matricula ?: ""
-            )
-        }
-    }
-
-    fun onReservarClick(plaza: Plaza) {
-        if (plaza.estadoEnum != EstadoPlaza.LIBRE) {
+    fun onActualizarClick(openAndPopUp: (String, String) -> Unit) {
+        val plazaId = uiState.value.plazaSeleccionadaId
+        if (plazaId.isBlank()) {
             SnackbarManager.showMessage(AppText.plaza_no_disponible)
             return
         }
-        if (matricula.isBlank()) {
+        if (uiState.value.matriculaSeleccionada.isBlank()) {
             SnackbarManager.showMessage(AppText.vehiculo_no_seleccionado_error)
             return
         }
         if (!validarFechaYHora()) return
 
-        // Comprobar que el usuario no tenga ya una reserva ese día.
+        // Comprobar que el usuario no tenga ya OTRA reserva ese día (distinta a la que editamos).
         val uid = accountService.currentUserId
         val zona = ZoneId.systemDefault()
         val yaReservado = reservasActivas.any { r ->
-            r.usuarioId == uid &&
+            r.id != reservaId &&
+                r.usuarioId == uid &&
                 (r.fechaReserva ?: r.horaInicio)
                     ?.toDate()?.toInstant()?.atZone(zona)?.toLocalDate() == fecha
         }
@@ -205,30 +222,22 @@ class ReservaViewModel @Inject constructor(
             val fin = Timestamp(Date.from(fecha.atTime(horaFin).atZone(zona).toInstant()))
             val dia = Timestamp(Date.from(fecha.atStartOfDay(zona).toInstant()))
 
-            val reserva = Reserva(
-                usuarioId = accountService.currentUserId,
-                plazaId = plaza.id,
-                matriculaVehiculo = matricula,
-                estado = EstadoReserva.AGENDADA,
+            reservaService.actualizarReserva(
+                reservaId = reservaId,
+                plazaId = plazaId,
+                matriculaVehiculo = uiState.value.matriculaSeleccionada,
                 fechaReserva = dia,
                 horaInicio = inicio,
                 horaFin = fin
             )
 
-            // 1. Crear la reserva en Firestore
-            reservaService.crearReserva(reserva)
-
-            // 2. Avisar y recargar: la ocupación se recalcula por día a partir de las reservas,
-            //    por eso NO marcamos la plaza como OCUPADA de forma global (eso la ocuparía todos los días).
-            SnackbarManager.showMessage(AppText.reserva_creada)
-            cargarPlazas()
+            SnackbarManager.showMessage(AppText.reserva_actualizada)
+            openAndPopUp(AparkauRoutes.HOME_SCREEN, AparkauRoutes.HOME_SCREEN)
         }
     }
 
-    /** Valida las reglas de negocio: máx. 7 días de antelación y máx. 9 horas de duración. */
     private fun validarFechaYHora(): Boolean {
         val hoy = LocalDate.now()
-
         if (fecha.isBefore(hoy)) {
             SnackbarManager.showMessage(AppText.fecha_pasada_error)
             return false
@@ -248,3 +257,4 @@ class ReservaViewModel @Inject constructor(
         return true
     }
 }
+

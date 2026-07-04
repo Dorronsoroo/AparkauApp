@@ -3,9 +3,12 @@ package com.lksnext.ParkingJDorronsoro
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.lksnext.ParkingJDorronsoro.screen.editar_reserva.EditarReservaScreen
 import com.lksnext.ParkingJDorronsoro.screen.home.HomeScreen
 import com.lksnext.ParkingJDorronsoro.screen.login.LoginScreen
 import com.lksnext.ParkingJDorronsoro.screen.mi_cuenta.MiCuentaScreen
@@ -37,6 +40,19 @@ fun AparkauNavGraph() {
 
         composable(route = AparkauRoutes.RESERVA_SCREEN) {
             ReservaScreen(
+                openAndPopUp = { route, popUp ->
+                    navController.navigate(route) {
+                        popUpTo(popUp) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(
+            route = "${AparkauRoutes.EDITAR_RESERVA_SCREEN}/{reservaId}",
+            arguments = listOf(navArgument("reservaId") { type = NavType.StringType })
+        ) {
+            EditarReservaScreen(
                 openAndPopUp = { route, popUp ->
                     navController.navigate(route) {
                         popUpTo(popUp) { inclusive = true }
@@ -91,4 +107,3 @@ private fun NavGraphBuilder.loginGraph(navController: NavHostController) {
         )
     }
 }
-

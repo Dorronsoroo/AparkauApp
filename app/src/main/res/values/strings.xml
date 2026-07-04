@@ -98,6 +98,7 @@
     <string name="reservado_por">Reservado por %1$s</string>
     <string name="matricula_error">Introduce la matrícula del vehículo.</string>
     <string name="plaza_no_disponible">Esa plaza ya no está disponible.</string>
+    <string name="ya_tiene_reserva_dia_error">Ya tienes una reserva para ese día. Solo se permite una por día.</string>
     <string name="fecha_pasada_error">No puedes reservar para una fecha pasada.</string>
     <string name="fecha_max_error">Solo puedes reservar con un máximo de 7 días de antelación.</string>
     <string name="hora_invalida_error">La hora de fin debe ser posterior a la de inicio.</string>
@@ -110,6 +111,16 @@
     <string name="estado_libre">Libre</string>
     <string name="estado_ocupada">Ocupada</string>
     <string name="estado_bloqueada">Bloqueada por tándem</string>
+
+    <!-- Editar reserva -->
+    <string name="editar_reserva_title">Editar reserva</string>
+    <string name="editar_reserva">Editar reserva</string>
+    <string name="actualizar_reserva">Actualizar reserva</string>
+    <string name="reserva_actualizada">¡Reserva actualizada correctamente!</string>
+    <string name="plaza_seleccionada">Plaza seleccionada: %1$s</string>
+    <string name="seleccionar_plaza">Seleccionar</string>
+    <string name="plaza_seleccionada_label">✓ Seleccionada</string>
+    <string name="cargando_reserva_error">No se pudo cargar la reserva.</string>
 
     <!-- Notificaciones push -->
     <string name="notif_channel_tandem_id" translatable="false">tandem_bloqueos</string>

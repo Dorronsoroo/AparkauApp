@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Warning
@@ -98,6 +99,7 @@ fun HomeScreen(
             onReserveClick = { viewModel.onReserveClick(openScreen) },
             onMiCuentaClick = { viewModel.onMiCuentaClick(openScreen) },
             onEliminarReservaClick = { viewModel.onEliminarReservaClick(it) },
+            onEditarReservaClick = { viewModel.onEditarReservaClick(it, openScreen) },
             onAvisarSalidaClick = { viewModel.onAvisarSalidaClick(it) },
             onAvisoSalidaVistoClick = { viewModel.onAvisoSalidaVistoClick(it) }
         )
@@ -111,6 +113,7 @@ fun HomeScreenContent(
     onReserveClick: () -> Unit,
     onMiCuentaClick: () -> Unit,
     onEliminarReservaClick: (String) -> Unit = {},
+    onEditarReservaClick: (String) -> Unit = {},
     onAvisarSalidaClick: (String) -> Unit = {},
     onAvisoSalidaVistoClick: (String) -> Unit = {}
 ) {
@@ -157,6 +160,7 @@ fun HomeScreenContent(
                     ReservaItem(
                         reservaUi = reservaUi,
                         onEliminarClick = { onEliminarReservaClick(reservaUi.reserva.id) },
+                        onEditarClick = { onEditarReservaClick(reservaUi.reserva.id) },
                         onAvisarSalidaClick = { onAvisarSalidaClick(reservaUi.reserva.plazaId) },
                         onAvisoSalidaVistoClick = { onAvisoSalidaVistoClick(reservaUi.reserva.id) }
                     )
@@ -182,6 +186,7 @@ fun HomeScreenContent(
 private fun ReservaItem(
     reservaUi: ReservaHomeUi,
     onEliminarClick: () -> Unit,
+    onEditarClick: () -> Unit,
     onAvisarSalidaClick: () -> Unit,
     onAvisoSalidaVistoClick: () -> Unit = {}
 ) {
@@ -207,6 +212,13 @@ private fun ReservaItem(
                 )
                 if (reservaUi.esTandem) {
                     TandemChip()
+                }
+                IconButton(onClick = onEditarClick) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.editar_reserva),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
                 IconButton(onClick = { showDeleteDialog = true }) {
                     Icon(

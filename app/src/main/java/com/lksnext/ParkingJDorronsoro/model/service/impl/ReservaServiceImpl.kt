@@ -1,5 +1,6 @@
 package com.lksnext.ParkingJDorronsoro.model.service.impl
 
+import com.google.firebase.Timestamp
 import com.lksnext.ParkingJDorronsoro.model.EstadoReserva
 import com.lksnext.ParkingJDorronsoro.model.Reserva
 import com.lksnext.ParkingJDorronsoro.model.service.ReservaService
@@ -10,7 +11,6 @@ import javax.inject.Inject
 
 class ReservaServiceImpl @Inject constructor() : ReservaService {
 
-    // Lazy para que la instancia se cree una sola vez cuando se necesite
     private val firestore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
@@ -20,9 +20,6 @@ class ReservaServiceImpl @Inject constructor() : ReservaService {
         private const val CAMPO_USUARIO_ID = "usuarioId"
     }
 
-    /**
-     * Crea una nueva reserva en Firestore y devuelve el ID del documento generado.
-     */
     override suspend fun crearReserva(reserva: Reserva): String {
         return firestore
             .collection(COLECCION_RESERVAS)
@@ -31,10 +28,15 @@ class ReservaServiceImpl @Inject constructor() : ReservaService {
             .id
     }
 
-    /**
-     * Devuelve las reservas de un usuario que todavía no han finalizado
-     * (estado AGENDADA o ACTIVA).
-     */
+    override suspend fun getReserva(reservaId: String): Reserva? {
+        return firestore
+            .collection(COLECCION_RESERVAS)
+            .document(reservaId)
+            .get(Source.SERVER)
+            .await()
+            .toObject(Reserva::class.java)
+    }
+
     override suspend fun getReservasActivas(usuarioId: String): List<Reserva> {
         return firestore
             .collection(COLECCION_RESERVAS)
@@ -47,10 +49,6 @@ class ReservaServiceImpl @Inject constructor() : ReservaService {
             }
     }
 
-    /**
-     * Devuelve TODAS las reservas activas (de cualquier usuario),
-     * útil para mostrar quién ocupa cada plaza.
-     */
     override suspend fun getTodasLasReservasActivas(): List<Reserva> {
         return firestore
             .collection(COLECCION_RESERVAS)
@@ -62,9 +60,6 @@ class ReservaServiceImpl @Inject constructor() : ReservaService {
             }
     }
 
-    /**
-     * Elimina una reserva de Firestore a partir de su ID.
-     */
     override suspend fun eliminarReserva(reservaId: String) {
         firestore
             .collection(COLECCION_RESERVAS)
@@ -73,10 +68,29 @@ class ReservaServiceImpl @Inject constructor() : ReservaService {
             .await()
     }
 
-    /**
-     * Limpia el campo `avisoSalidaEn` de la reserva: el bloqueador ya ha visto
-     * el aviso de "alguien necesita salir".
-     */
+    override suspend fun actualizarReserva(
+        reservaId: String,
+        plazaId: String,
+        matriculaVehiculo: String,
+        fechaReserva: Timestamp,
+        horaInicio: Timestamp,
+        horaFin: Timestamp
+    ) {
+        firestore
+            .collection(COLECCION_RESERVAS)
+            .document(reservaId)
+            .update(
+                mapOf(
+                    "plazaId" to plazaId,
+                    "matriculaVehiculo" to matriculaVehiculo,
+                    "fechaReserva" to fechaReserva,
+                    "horaInicio" to horaInicio,
+                    "horaFin" to horaFin
+                )
+            )
+            .await()
+    }
+
     override suspend fun marcarAvisoSalidaVisto(reservaId: String) {
         firestore
             .collection(COLECCION_RESERVAS)

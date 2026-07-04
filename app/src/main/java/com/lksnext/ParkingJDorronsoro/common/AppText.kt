@@ -43,8 +43,15 @@ object AppText {
     val matricula_error = R.string.matricula_error
     val vehiculo_no_seleccionado_error = R.string.vehiculo_no_seleccionado_error
     val plaza_no_disponible = R.string.plaza_no_disponible
+    val ya_tiene_reserva_dia_error = R.string.ya_tiene_reserva_dia_error
     val fecha_pasada_error = R.string.fecha_pasada_error
     val fecha_max_error = R.string.fecha_max_error
     val hora_invalida_error = R.string.hora_invalida_error
     val duracion_error = R.string.duracion_error
+
+    // Editar reserva
+    val editar_reserva_title = R.string.editar_reserva_title
+    val actualizar_reserva = R.string.actualizar_reserva
+    val reserva_actualizada = R.string.reserva_actualizada
+    val cargando_reserva_error = R.string.cargando_reserva_error
 }

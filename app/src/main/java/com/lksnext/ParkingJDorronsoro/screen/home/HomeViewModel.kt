@@ -38,8 +38,17 @@ class HomeViewModel @Inject constructor(
         launchCatching {
             try {
                 val uid = accountService.currentUserId
-                val misReservas = reservaService.getReservasActivas(uid)
-                    .sortedBy { it.horaInicio }
+                val ahora = Date()
+
+                // Separamos caducadas (horaFin ya pasó) de las vigentes y las eliminamos en Firestore.
+                val todasMisReservas = reservaService.getReservasActivas(uid)
+                val (caducadas, vigentes) = todasMisReservas.partition { reserva ->
+                    val fin = reserva.horaFin ?: reserva.fechaReserva
+                    fin != null && fin.toDate().before(ahora)
+                }
+                caducadas.forEach { reservaService.eliminarReserva(it.id) }
+
+                val misReservas = vigentes.sortedBy { it.horaInicio }
                 val plazas = plazaService.getTodasLasPlazas()
                 val todasReservas = reservaService.getTodasLasReservasActivas()
 
@@ -90,6 +99,10 @@ class HomeViewModel @Inject constructor(
 
     fun onReserveClick(openScreen: (String) -> Unit) {
         openScreen(AparkauRoutes.RESERVA_SCREEN)
+    }
+
+    fun onEditarReservaClick(reservaId: String, openScreen: (String) -> Unit) {
+        openScreen("${AparkauRoutes.EDITAR_RESERVA_SCREEN}/$reservaId")
     }
 
     fun onEliminarReservaClick(reservaId: String) {
