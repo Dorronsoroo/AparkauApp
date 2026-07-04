@@ -40,13 +40,23 @@ class HomeViewModel @Inject constructor(
         launchCatching {
             try {
                 val uid = accountService.currentUserId
-                val ahora = Date()
 
-                // Separamos caducadas (horaFin ya pasó) de las vigentes y las eliminamos en Firestore.
+                // Una reserva solo se considera caducada cuando su DÍA ya ha
+                // terminado (es anterior a hoy). Antes se comparaba con la hora
+                // exacta, de modo que una reserva creada para hoy con una franja
+                // que ya había pasado (p. ej. 8:00-17:00 reservada por la tarde)
+                // se auto-borraba nada más volver a Inicio y "desaparecía".
+                val inicioDeHoy = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.time
+
                 val todasMisReservas = reservaService.getReservasActivas(uid)
                 val (caducadas, vigentes) = todasMisReservas.partition { reserva ->
                     val fin = reserva.horaFin ?: reserva.fechaReserva
-                    fin != null && fin.toDate().before(ahora)
+                    fin != null && fin.toDate().before(inicioDeHoy)
                 }
                 caducadas.forEach { reservaService.eliminarReserva(it.id) }
 
