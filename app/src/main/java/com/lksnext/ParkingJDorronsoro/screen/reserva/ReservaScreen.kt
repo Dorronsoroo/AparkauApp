@@ -59,6 +59,10 @@ import com.lksnext.ParkingJDorronsoro.model.Plaza
 import com.lksnext.ParkingJDorronsoro.model.TipoPlaza
 import com.lksnext.ParkingJDorronsoro.model.Vehiculo
 import com.lksnext.ParkingJDorronsoro.theme.AparkauTheme
+import com.lksnext.ParkingJDorronsoro.theme.ErrorContainer
+import com.lksnext.ParkingJDorronsoro.theme.OnErrorContainer
+import com.lksnext.ParkingJDorronsoro.theme.OnSuccessContainer
+import com.lksnext.ParkingJDorronsoro.theme.SuccessContainer
 import kotlinx.coroutines.flow.filterNotNull
 import java.time.LocalDate
 import java.time.LocalTime
@@ -253,11 +257,13 @@ fun ReservaScreenContent(
             }
         }
 
-        Button(
+        OutlinedButton(
             onClick = onVolverClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
+                .height(50.dp),
+            shape = MaterialTheme.shapes.medium
         ) {
             Text(text = stringResource(R.string.back_to_home))
         }
@@ -381,6 +387,8 @@ private fun TandemPlazaItem(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
@@ -406,14 +414,16 @@ private fun TandemPlazaItem(
             androidx.compose.material3.HorizontalDivider()
 
             listOf(plazaA, plazaB).forEach { plaza ->
-                val subCardColor = when (plaza.estadoEnum) {
-                    EstadoPlaza.LIBRE -> Color(0xFFD4EDDA)
-                    EstadoPlaza.OCUPADA -> Color(0xFFF8D7DA)
-                    EstadoPlaza.BLOQUEADA_POR_TANDEM -> Color(0xFFF8D7DA)
-                }
+                val libre = plaza.estadoEnum == EstadoPlaza.LIBRE
+                val subCardColor = if (libre) SuccessContainer else ErrorContainer
+                val subContentColor = if (libre) OnSuccessContainer else OnErrorContainer
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = subCardColor)
+                    shape = MaterialTheme.shapes.medium,
+                    colors = CardDefaults.cardColors(
+                        containerColor = subCardColor,
+                        contentColor = subContentColor
+                    )
                 ) {
                     Row(
                         modifier = Modifier
@@ -456,11 +466,12 @@ private fun TandemPlazaItem(
 private fun SectionHeader(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 4.dp)
+            .padding(top = 12.dp, bottom = 4.dp)
     )
 }
 
@@ -470,15 +481,15 @@ private fun PlazaItem(
     ocupante: String?,
     onReservarClick: (Plaza) -> Unit
 ) {
-    val cardColor = when (plaza.estadoEnum) {
-        EstadoPlaza.LIBRE -> Color(0xFFD4EDDA)
-        EstadoPlaza.OCUPADA -> Color(0xFFF8D7DA)
-        EstadoPlaza.BLOQUEADA_POR_TANDEM -> Color(0xFFF8D7DA)
-    }
+    val libre = plaza.estadoEnum == EstadoPlaza.LIBRE
+    val cardColor = if (libre) SuccessContainer else ErrorContainer
+    val contentColor = if (libre) OnSuccessContainer else OnErrorContainer
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = cardColor)
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor, contentColor = contentColor)
     ) {
         Row(
             modifier = Modifier

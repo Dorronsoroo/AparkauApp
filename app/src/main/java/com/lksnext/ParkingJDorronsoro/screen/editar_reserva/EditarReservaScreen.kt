@@ -58,6 +58,11 @@ import com.lksnext.ParkingJDorronsoro.model.Plaza
 import com.lksnext.ParkingJDorronsoro.model.TipoPlaza
 import com.lksnext.ParkingJDorronsoro.model.Vehiculo
 import com.lksnext.ParkingJDorronsoro.theme.AparkauTheme
+import com.lksnext.ParkingJDorronsoro.theme.ErrorContainer
+import com.lksnext.ParkingJDorronsoro.theme.OnErrorContainer
+import com.lksnext.ParkingJDorronsoro.theme.OnSuccessContainer
+import com.lksnext.ParkingJDorronsoro.theme.SuccessContainer
+import com.lksnext.ParkingJDorronsoro.theme.SuccessGreen
 import kotlinx.coroutines.flow.filterNotNull
 import java.time.LocalDate
 import java.time.LocalTime
@@ -278,6 +283,8 @@ fun EditarReservaScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 4.dp)
+                .height(54.dp),
+            shape = MaterialTheme.shapes.medium
         ) {
             Text(text = stringResource(R.string.actualizar_reserva), fontWeight = FontWeight.Bold)
         }
@@ -288,6 +295,8 @@ fun EditarReservaScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .height(50.dp),
+            shape = MaterialTheme.shapes.medium
         ) {
             Text(text = stringResource(R.string.back_to_home))
         }
@@ -298,11 +307,12 @@ fun EditarReservaScreenContent(
 private fun SectionHeaderEditar(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 4.dp)
+            .padding(top = 12.dp, bottom = 4.dp)
     )
 }
 
@@ -338,10 +348,16 @@ private fun PlazaItemEditar(
     onSeleccionarClick: (String) -> Unit
 ) {
     val esSeleccionada = plaza.id == plazaSeleccionadaId
+    val libre = plaza.estadoEnum == EstadoPlaza.LIBRE
     val cardColor = when {
-        esSeleccionada -> Color(0xFF4CAF50)
-        plaza.estadoEnum == EstadoPlaza.LIBRE -> Color(0xFFD4EDDA)
-        else -> Color(0xFFF8D7DA)
+        esSeleccionada -> SuccessGreen
+        libre -> SuccessContainer
+        else -> ErrorContainer
+    }
+    val contentColor = when {
+        esSeleccionada -> Color.White
+        libre -> OnSuccessContainer
+        else -> OnErrorContainer
     }
     val border = if (esSeleccionada) {
         BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
@@ -349,7 +365,9 @@ private fun PlazaItemEditar(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = cardColor),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor, contentColor = contentColor),
         border = border
     ) {
         Row(
@@ -434,6 +452,8 @@ private fun TandemPlazaItemEditar(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
@@ -460,14 +480,24 @@ private fun TandemPlazaItemEditar(
 
             listOf(plazaA, plazaB).forEach { plaza ->
                 val esSeleccionada = plaza.id == plazaSeleccionadaId
+                val libre = plaza.estadoEnum == EstadoPlaza.LIBRE
                 val subCardColor = when {
-                    esSeleccionada -> Color(0xFF4CAF50)
-                    plaza.estadoEnum == EstadoPlaza.LIBRE -> Color(0xFFD4EDDA)
-                    else -> Color(0xFFF8D7DA)
+                    esSeleccionada -> SuccessGreen
+                    libre -> SuccessContainer
+                    else -> ErrorContainer
+                }
+                val subContentColor = when {
+                    esSeleccionada -> Color.White
+                    libre -> OnSuccessContainer
+                    else -> OnErrorContainer
                 }
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = subCardColor)
+                    shape = MaterialTheme.shapes.medium,
+                    colors = CardDefaults.cardColors(
+                        containerColor = subCardColor,
+                        contentColor = subContentColor
+                    )
                 ) {
                     Row(
                         modifier = Modifier

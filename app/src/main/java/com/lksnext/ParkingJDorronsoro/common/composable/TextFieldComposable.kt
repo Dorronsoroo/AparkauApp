@@ -1,10 +1,13 @@
 package com.lksnext.ParkingJDorronsoro.common.composable
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -21,6 +24,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
+private fun brandFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedBorderColor = MaterialTheme.colorScheme.primary,
+    focusedLabelColor = MaterialTheme.colorScheme.primary,
+    cursorColor = MaterialTheme.colorScheme.primary,
+    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+    focusedContainerColor = MaterialTheme.colorScheme.surface
+)
+
+@Composable
 fun BasicField(
     value: String,
     onNewValue: (String) -> Unit,
@@ -29,10 +42,12 @@ fun BasicField(
 ) {
     OutlinedTextField(
         singleLine = true,
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onNewValue(it) },
         label = { Text(stringResource(label)) },
+        shape = MaterialTheme.shapes.small,
+        colors = brandFieldColors(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
     )
 }
@@ -46,10 +61,12 @@ fun EmailField(
 ) {
     OutlinedTextField(
         singleLine = true,
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onNewValue(it) },
         label = { Text(stringResource(label)) },
+        shape = MaterialTheme.shapes.small,
+        colors = brandFieldColors(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
     )
 }
@@ -67,11 +84,13 @@ fun PasswordField(
         if (isVisible) VisualTransformation.None else PasswordVisualTransformation()
 
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onNewValue(it) },
         label = { Text(text = stringResource(label)) },
         singleLine = true,
+        shape = MaterialTheme.shapes.small,
+        colors = brandFieldColors(),
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
@@ -83,4 +102,3 @@ fun PasswordField(
         }
     )
 }
-

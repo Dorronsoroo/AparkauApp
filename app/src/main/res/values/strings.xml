@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Aparkau</string>
+    <string name="app_tagline">Tu plaza de aparcamiento, sin complicaciones</string>
+    <string name="login_subtitle">Accede a tu cuenta para gestionar tus reservas</string>
+    <string name="sign_up_subtitle">Crea tu cuenta para empezar a reservar</string>
 
     <!-- Sign Up labels -->
     <string name="sign_up">Crear cuenta</string>

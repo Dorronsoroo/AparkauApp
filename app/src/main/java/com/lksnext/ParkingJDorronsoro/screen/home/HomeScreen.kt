@@ -24,9 +24,11 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -57,6 +59,9 @@ import com.lksnext.ParkingJDorronsoro.common.ext.basicButton
 import com.lksnext.ParkingJDorronsoro.common.snackbar.SnackbarManager
 import com.lksnext.ParkingJDorronsoro.common.snackbar.SnackbarMessage
 import com.lksnext.ParkingJDorronsoro.theme.AparkauTheme
+import com.lksnext.ParkingJDorronsoro.theme.OnWarningContainer
+import com.lksnext.ParkingJDorronsoro.theme.WarningAmber
+import com.lksnext.ParkingJDorronsoro.theme.WarningContainer
 import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.filterNotNull
 import java.text.SimpleDateFormat
@@ -125,11 +130,15 @@ fun HomeScreenContent(
 
         Text(
             text = stringResource(AppText.home_welcome),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = stringResource(R.string.my_reservations),
@@ -174,11 +183,16 @@ fun HomeScreenContent(
             action = onReserveClick
         )
 
-        BasicButton(
-            text = AppText.mi_cuenta_title,
-            modifier = Modifier.basicButton(),
-            action = onMiCuentaClick
-        )
+        OutlinedButton(
+            onClick = onMiCuentaClick,
+            modifier = Modifier
+                .basicButton()
+                .fillMaxWidth()
+                .height(54.dp),
+            shape = MaterialTheme.shapes.medium
+        ) {
+            Text(text = stringResource(AppText.mi_cuenta_title))
+        }
     }
 }
 
@@ -193,7 +207,11 @@ private fun ReservaItem(
     val reserva = reservaUi.reserva
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             // Cabecera: "Tu reserva de hoy" + chip "Tándem"
             Row(
@@ -229,22 +247,33 @@ private fun ReservaItem(
                 }
             }
 
-            // Número de plaza (grande) + zona
-            Row(verticalAlignment = Alignment.Bottom) {
-                Text(
-                    text = reserva.plazaId,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Número de plaza (badge) + zona
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Text(
+                        text = reserva.plazaId,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
+                }
                 if (reservaUi.zona.isNotBlank()) {
                     Text(
-                        text = " ${reservaUi.zona}",
+                        text = reservaUi.zona,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(start = 12.dp)
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Horario + matrícula
             Text(
@@ -386,13 +415,14 @@ private fun BloqueadoBanner() {
  */
 @Composable
 private fun AvisoSalidaBanner(onEntendidoClick: () -> Unit) {
-    val ambar = Color(0xFFFF8F00)
+    val ambar = WarningAmber
+    val onAmbar = OnWarningContainer
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = ambar.copy(alpha = 0.18f),
-                shape = RoundedCornerShape(10.dp)
+                color = WarningContainer,
+                shape = RoundedCornerShape(12.dp)
             )
             .padding(12.dp)
     ) {
@@ -409,12 +439,12 @@ private fun AvisoSalidaBanner(onEntendidoClick: () -> Unit) {
                     Text(
                         text = stringResource(R.string.aviso_salida_recibido_titulo),
                         fontWeight = FontWeight.Bold,
-                        color = ambar
+                        color = onAmbar
                     )
                     Text(
                         text = stringResource(R.string.aviso_salida_recibido_subtitulo),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = ambar
+                        color = onAmbar
                     )
                 }
             }

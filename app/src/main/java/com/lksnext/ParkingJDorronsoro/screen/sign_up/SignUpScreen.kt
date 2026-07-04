@@ -31,6 +31,7 @@ import com.lksnext.ParkingJDorronsoro.R
 import com.lksnext.ParkingJDorronsoro.common.composable.BasicButton
 import com.lksnext.ParkingJDorronsoro.common.composable.BasicTextButton
 import com.lksnext.ParkingJDorronsoro.common.composable.BasicField
+import com.lksnext.ParkingJDorronsoro.common.composable.BrandHeader
 import com.lksnext.ParkingJDorronsoro.common.composable.EmailField
 import com.lksnext.ParkingJDorronsoro.common.composable.PasswordField
 import com.lksnext.ParkingJDorronsoro.common.ext.basicButton
@@ -103,12 +104,9 @@ fun SignUpScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(R.string.sign_up),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        BrandHeader(subtitle = R.string.sign_up_subtitle)
+
+        Spacer(modifier = Modifier.height(28.dp))
 
         BasicField(
             value = uiState.nombre,

@@ -14,7 +14,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -107,6 +109,7 @@ fun MisCochesScreenContent(
             singleLine = true,
             modifier = Modifier.fieldModifier(),
             label = { Text(stringResource(R.string.matricula)) },
+            shape = MaterialTheme.shapes.small,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters)
         )
 
@@ -116,6 +119,7 @@ fun MisCochesScreenContent(
             singleLine = true,
             modifier = Modifier.fieldModifier(),
             label = { Text(stringResource(R.string.modelo)) },
+            shape = MaterialTheme.shapes.small,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words)
         )
 
@@ -173,11 +177,16 @@ fun MisCochesScreenContent(
             }
         }
 
-        BasicButton(
-            text = AppText.back_to_home,
-            modifier = Modifier.basicButton(),
-            action = onVolverClick
-        )
+        OutlinedButton(
+            onClick = onVolverClick,
+            modifier = Modifier
+                .basicButton()
+                .fillMaxWidth()
+                .height(54.dp),
+            shape = MaterialTheme.shapes.medium
+        ) {
+            Text(text = stringResource(AppText.back_to_home))
+        }
     }
 }
 
@@ -186,7 +195,11 @@ private fun VehiculoItem(
     vehiculo: Vehiculo,
     onEliminarClick: (Vehiculo) -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -201,14 +214,16 @@ private fun VehiculoItem(
                 )
                 Text(
                     text = vehiculo.modelo,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             IconButton(onClick = { onEliminarClick(vehiculo) }) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(R.string.eliminar)
+                    contentDescription = stringResource(R.string.eliminar),
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
         }

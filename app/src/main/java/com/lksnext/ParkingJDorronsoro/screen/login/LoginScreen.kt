@@ -23,10 +23,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lksnext.ParkingJDorronsoro.R
 import com.lksnext.ParkingJDorronsoro.common.AppText
 import com.lksnext.ParkingJDorronsoro.common.composable.BasicButton
 import com.lksnext.ParkingJDorronsoro.common.composable.BasicTextButton
-import com.lksnext.ParkingJDorronsoro.common.composable.BasicToolbar
+import com.lksnext.ParkingJDorronsoro.common.composable.BrandHeader
 import com.lksnext.ParkingJDorronsoro.common.composable.EmailField
 import com.lksnext.ParkingJDorronsoro.common.composable.PasswordField
 import com.lksnext.ParkingJDorronsoro.common.ext.basicButton
@@ -91,10 +92,6 @@ fun LoginScreenContent(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BasicToolbar(title = AppText.login_details)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -103,6 +100,10 @@ fun LoginScreenContent(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            BrandHeader(subtitle = R.string.login_subtitle)
+
+            Spacer(modifier = Modifier.height(32.dp))
+
             EmailField(
                 value = uiState.email,
                 onNewValue = onEmailChange,

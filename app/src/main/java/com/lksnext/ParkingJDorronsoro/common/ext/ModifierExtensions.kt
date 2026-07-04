@@ -8,18 +8,17 @@ import androidx.compose.ui.unit.dp
 fun Modifier.fieldModifier(): Modifier {
     return this
         .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 4.dp)
+        .padding(horizontal = 24.dp, vertical = 6.dp)
 }
 
 fun Modifier.basicButton(): Modifier {
-    return this.padding(horizontal = 16.dp, vertical = 8.dp)
+    return this.padding(horizontal = 24.dp, vertical = 8.dp)
 }
 
 fun Modifier.textButton(): Modifier {
-    return this.padding(horizontal = 16.dp, vertical = 4.dp)
+    return this.padding(horizontal = 24.dp, vertical = 2.dp)
 }
 
 fun Modifier.card(): Modifier {
     return this.padding(16.dp)
 }
-

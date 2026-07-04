@@ -11,25 +11,53 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary          = OrangeLight,
-    onPrimary        = OnOrange,
-    primaryContainer = OrangeDark,
-    onPrimaryContainer = OnOrange,
-    secondary        = NeutralGrey,
-    onSecondary      = OnOrange,
-    tertiary         = OrangeContainer,
-    onTertiary       = OnOrangeContainer
+    primary            = OrangeLight,
+    onPrimary          = OnOrangeDarkText,
+    primaryContainer   = OrangeDark,
+    onPrimaryContainer = OrangeContainer,
+    secondary          = NeutralGreyLight,
+    onSecondary        = SurfaceVariantDark,
+    secondaryContainer = SurfaceVariantDark,
+    onSecondaryContainer = OnSurfaceVariantDark,
+    tertiary           = OrangeLight,
+    onTertiary         = OnOrangeDarkText,
+    background         = BackgroundDark,
+    onBackground       = OnBackgroundDark,
+    surface            = SurfaceDark,
+    onSurface          = OnSurfaceDark,
+    surfaceVariant     = SurfaceVariantDark,
+    onSurfaceVariant   = OnSurfaceVariantDark,
+    outline            = OutlineDark,
+    outlineVariant     = OutlineVariantDark,
+    error              = ErrorRed,
+    onError            = OnOrange,
+    errorContainer     = ErrorContainer,
+    onErrorContainer   = OnErrorContainer
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary          = OrangePrimary,
-    onPrimary        = OnOrange,
-    primaryContainer = OrangeContainer,
+    primary            = OrangePrimary,
+    onPrimary          = OnOrange,
+    primaryContainer   = OrangeContainer,
     onPrimaryContainer = OnOrangeContainer,
-    secondary        = NeutralGrey,
-    onSecondary      = OnOrange,
-    tertiary         = OrangeDark,
-    onTertiary       = OnOrange
+    secondary          = NeutralGrey,
+    onSecondary        = OnNeutral,
+    secondaryContainer = SurfaceVariantLight,
+    onSecondaryContainer = OnSurfaceVariantLight,
+    tertiary           = OrangeDark,
+    onTertiary         = OnOrange,
+    background         = BackgroundLight,
+    onBackground       = OnBackgroundLight,
+    surface            = SurfaceLight,
+    onSurface          = OnSurfaceLight,
+    surfaceVariant     = SurfaceVariantLight,
+    onSurfaceVariant   = OnSurfaceVariantLight,
+    outline            = OutlineLight,
+    outlineVariant     = OutlineVariantLight,
+    error              = ErrorRed,
+    onError            = OnOrange,
+    errorContainer     = ErrorContainer,
+    onErrorContainer   = OnErrorContainer
 )
 
 @Composable
@@ -52,6 +80,7 @@ fun AparkauTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }
