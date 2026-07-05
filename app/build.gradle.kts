@@ -98,11 +98,6 @@ dependencies {
 
 
 }
-kover {
-    currentProject {
-        createVariant("coverage") {
-            add("debug")
-        }
-    }
+tasks.named("koverXmlReport") {
+    dependsOn("testDebugUnitTest")
 }
-
