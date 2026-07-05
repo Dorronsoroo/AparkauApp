@@ -13,8 +13,8 @@ plugins {
 
 sonarqube {
     properties {
-        property("sonar.projectKey", "adriangarcialks_parking-aula-empresa")
-        property("sonar.organization", "adriangarcialks")
-        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.projectKey", "dorronsoroo_aparkauapp")
+        property("sonar.organization", "dorronsoroo")
+        property("sonar.host.url", "https://sonarcloud.io"))
     }
 }
