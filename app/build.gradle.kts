@@ -98,8 +98,7 @@ dependencies {
 
 
 }
-tasks.named("koverXmlReport") {
-    dependsOn("testDebugUnitTest")
+
 
 
 jacoco {
