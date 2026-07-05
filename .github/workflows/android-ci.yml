@@ -1,0 +1,48 @@
+name: Android CI (Build & Unit Tests)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    name: Build & Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    - name: Configurar JDK 21 (Requerido para AGP 9.x)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21' 
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Inyectar google-services.json (Firebase)
+      env:
+        GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+      run: |
+        if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+          echo $GOOGLE_SERVICES_JSON | base64 -d > app/google-services.json
+        else
+          echo "No se encontró el secreto GOOGLE_SERVICES_JSON_BASE64. Saltando paso."
+        fi
+
+    - name: Dar permisos a gradlew
+      run: chmod +x ./gradlew
+
+    - name: Ejecutar Tests Unitarios
+      run: ./gradlew testDebugUnitTest
+
+    - name: Compilar la aplicación (Debug APK)
+      run: ./gradlew assembleDebug
+
+    - name: Subir APK como artefacto
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug
+        path: app/build/outputs/apk/debug/app-debug.apk
