@@ -8,7 +8,7 @@ plugins {
 
     id("org.sonarqube") version "7.3.1.8318"
 
-    id("org.jetbrains.kotlinx.kover") version "0.8.3"
+    id("org.jetbrains.kotlinx.kover") version "0.9.2" 
 
 
 
