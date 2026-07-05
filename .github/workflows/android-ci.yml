@@ -1,4 +1,4 @@
-name: Android CI (Build & Unit Tests)
+name: Android CI (Build, Test & Sonar)
 
 on:
   push:
@@ -47,16 +47,17 @@ jobs:
         name: app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
 
-  # --- JOB DE SONAR CON COBERTURA ---
+  # --- JOB DE SONAR CORREGIDO ---
   sonar:
     name: Sonar Analysis
     runs-on: ubuntu-latest
+    # Forzamos a que termine el build primero, aunque realmente este job volverá a compilar
+    needs: build-and-test 
     
     steps:
     - name: Checkout del código (Con historial completo)
       uses: actions/checkout@v4
       with:
-        # CRÍTICO: Sonar necesita el historial completo para analizar quién hizo qué (blame) y analizar PRs.
         fetch-depth: 0  
 
     - name: Configurar JDK 21
@@ -70,7 +71,6 @@ jobs:
       env:
         GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
       run: |
-        # Necesario repetirlo aquí porque Sonar necesita compilar tu código de Android para analizarlo.
         if [ -n "$GOOGLE_SERVICES_JSON" ]; then
           echo $GOOGLE_SERVICES_JSON | base64 -d > app/google-services.json
         fi
@@ -78,11 +78,17 @@ jobs:
     - name: Dar permisos a gradlew
       run: chmod +x ./gradlew
 
-    - name: Generar Reporte de Cobertura (Kover)
-      run: ./gradlew koverXmlReport
+    # CAMBIO CRÍTICO: Primero corremos los tests unitarios y LUEGO generamos el reporte de Kover
+    # en la misma máquina virtual.
+    - name: Ejecutar Tests y Generar Reporte de Cobertura (Kover)
+      run: ./gradlew testDebugUnitTest koverXmlReport
 
+    # CAMBIO CRÍTICO 2: Pasamos la ruta del XML de Kover a Sonar mediante parámetros de línea de comandos
     - name: Ejecutar análisis de Sonar
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Necesario si quieres que Sonar comente en las Pull Requests
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Debes añadir este token en los Secrets de tu repositorio en GitHub
-      run: ./gradlew sonar --info
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        ./gradlew sonar \
+          -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/kover/report.xml \
+          --info
