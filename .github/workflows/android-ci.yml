@@ -47,7 +47,7 @@ jobs:
         name: app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
 
-  # --- NUEVO JOB DE SONAR ---
+  # --- JOB DE SONAR CON COBERTURA ---
   sonar:
     name: Sonar Analysis
     runs-on: ubuntu-latest
@@ -71,13 +71,15 @@ jobs:
         GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
       run: |
         # Necesario repetirlo aquí porque Sonar necesita compilar tu código de Android para analizarlo.
-        # Si falta este archivo, el build de Gradle fallará antes de que Sonar pueda hacer su trabajo.
         if [ -n "$GOOGLE_SERVICES_JSON" ]; then
           echo $GOOGLE_SERVICES_JSON | base64 -d > app/google-services.json
         fi
 
     - name: Dar permisos a gradlew
       run: chmod +x ./gradlew
+
+    - name: Generar Reporte de Cobertura (Kover)
+      run: ./gradlew koverXmlReport
 
     - name: Ejecutar análisis de Sonar
       env:
