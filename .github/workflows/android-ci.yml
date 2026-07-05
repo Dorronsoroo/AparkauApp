@@ -67,23 +67,15 @@ jobs:
     # Separamos en dos líneas para asegurar que Kover recopile los tests ya ejecutados
     - name: Ejecutar Tests y Generar Reporte de Cobertura (Kover)
       run: |
-        ./gradlew testDebugUnitTest
-        ./gradlew koverXmlReport
-    # --- DIAGNÓSTICO: ver qué contiene realmente el XML de Kover ---
+        ./gradlew testDebugUnitTest koverXmlReportCoveragede Kover ---
     - name: Ver contenido real del XML de Kover
       run: |
-        echo "=== ¿existen los archivos? ==="
-        ls -la build/reports/kover/report.xml app/build/reports/kover/report.xml 2>/dev/null || echo "falta alguno"
-        echo "=== nº de clases en report raiz ==="
-        grep -c "<class" build/reports/kover/report.xml 2>/dev/null || echo "sin archivo raiz"
-        echo "=== líneas cubiertas (covered) en report raiz ==="
-        grep -o 'covered="[0-9]*"' build/reports/kover/report.xml 2>/dev/null | sort | uniq -c || echo "sin datos"
-        echo "=== tareas kover disponibles ==="
-        ./gradlew tasks --all | grep -i koverXml || echo "sin tareas kover"
-        echo "=== primeros 600 chars ==="
-        head -c 600 build/reports/kover/report.xml 2>/dev/null || echo "sin archivo"
-    # CORREGIDO: Eliminamos el -Dsonar.coverage.jacoco.xmlReportPaths para que Sonar 
-    # use obligatoriamente la ruta que definiste en tu archivo build.gradle
+        echo "=== todos los xml de kover y su tamaño ==="
+        find . -path "*kover*" -name "*.xml" -exec ls -la {} \;
+        echo "=== clases en cada xml ==="
+        find . -path "*kover*" -name "*.xml" -exec sh -c 'echo "-- $1"; grep -c "<class" "$1"' _ {} \;
+        echo "=== líneas covered en cada xml ==="
+        find . -path "*kover*" -name "*.xml" -exec sh -c 'echo "-- $1"; grep -o "covered=\"[0-9]*\"" "$1" | sort | uniq -c' _ {} \;
     - name: Ejecutar análisis de Sonar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
