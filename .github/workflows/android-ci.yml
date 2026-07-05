@@ -65,18 +65,12 @@ jobs:
     - name: Dar permisos a gradlew
       run: chmod +x ./gradlew
     # Separamos en dos líneas para asegurar que Kover recopile los tests ya ejecutados
-    - name: Ejecutar Tests y Generar Reporte de Cobertura (Kover)
-      run: ./gradlew testDebugUnitTest koverXmlReport
-    - name: Ver contenido real del XML de Kover
+    - name: Ejecutar Tests y Generar Reporte de Cobertura (JaCoCo)
+      run: ./gradlew testDebugUnitTest jacocoTestReport
+    - name: Verificar reporte JaCoCo
       run: |
-        echo "=== todos los xml de kover y su tamaño ==="
-        find . -path "*kover*" -name "*.xml" -exec ls -la {} \;
-        echo "=== clases en cada xml ==="
-        find . -path "*kover*" -name "*.xml" -exec sh -c 'echo "-- $1"; grep -c "<class" "$1"' _ {} \;
-        echo "=== líneas covered en cada xml ==="
-        find . -path "*kover*" -name "*.xml" -exec sh -c 'echo "-- $1"; grep -o "covered=\"[0-9]*\"" "$1" | sort | uniq -c' _ {} \;
-    - name: Listar tareas Kover reales
-      run: ./gradlew :app:tasks --all | grep -i kover
+        find . -path "*jacoco*" -name "*.xml" -exec ls -la {} \;
+        find . -path "*jacoco*" -name "jacocoTestReport.xml" -exec grep -c "<class" {} \;
     - name: Ejecutar análisis de Sonar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
