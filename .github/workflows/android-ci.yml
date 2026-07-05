@@ -66,8 +66,7 @@ jobs:
       run: chmod +x ./gradlew
     # Separamos en dos líneas para asegurar que Kover recopile los tests ya ejecutados
     - name: Ejecutar Tests y Generar Reporte de Cobertura (Kover)
-      run: |
-        ./gradlew testDebugUnitTest koverXmlReportCoveragede Kover ---
+      run: ./gradlew testDebugUnitTest koverXmlReport
     - name: Ver contenido real del XML de Kover
       run: |
         echo "=== todos los xml de kover y su tamaño ==="
