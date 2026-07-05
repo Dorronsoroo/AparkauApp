@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.ksp)
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlinx.kover")  
+
 
 }
 
