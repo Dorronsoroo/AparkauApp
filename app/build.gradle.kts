@@ -131,11 +131,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         exclude(fileFilter)
     }
 
-    val mainSrc = "${projectDir}/src/main/java"
-
-    sourceDirectories.setFrom(files(mainSrc))
+    sourceDirectories.setFrom(files("${projectDir}/src/main/java"))
     classDirectories.setFrom(files(kotlinClasses, javaClasses))
-    executionData.setFrom(fileTree(layout.buildDirectory.get()) {
-        include("**/*.exec", "**/*.ec")
-    })
+    // Ruta concreta del .exec, en vez de barrer todo build/
+    executionData.setFrom(files("${layout.buildDirectory.get()}/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"))
 }
