@@ -10,3 +10,11 @@ plugins {
 
 
 }
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "adriangarcialks_parking-aula-empresa")
+        property("sonar.organization", "adriangarcialks")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
