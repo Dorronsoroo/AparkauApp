@@ -15,6 +15,6 @@ sonarqube {
     properties {
         property("sonar.projectKey", "dorronsoroo_aparkauapp")
         property("sonar.organization", "dorronsoroo")
-        property("sonar.host.url", "https://sonarcloud.io"))
+        property("sonar.host.url", "https://sonarcloud.io")
     }
 }
