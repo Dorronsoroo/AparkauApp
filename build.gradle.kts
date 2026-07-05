@@ -6,6 +6,6 @@ plugins {
     id("com.google.gms.google-services") version "4.5.0" apply false
     id("com.google.dagger.hilt.android") version "2.60" apply false
 
-    id("org.sonarqube") version "3.3"
+    id("org.sonarqube") version "5.1.0.4882"
 
 }
