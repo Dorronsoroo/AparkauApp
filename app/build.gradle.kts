@@ -119,19 +119,22 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     val fileFilter = listOf(
         "**/R.class", "**/R\$*.class", "**/BuildConfig.*", "**/Manifest*.*",
         "**/*Test*.*", "android/**/*.*",
-        // Generados por Hilt/Dagger
         "**/*_Hilt*.*", "**/hilt_aggregated_deps/**", "**/*_Factory.*",
         "**/*_MembersInjector.*", "**/Dagger*.*", "**/*Module_*.*",
         "**/*_Impl.*"
     )
 
-    val debugTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+    val kotlinClasses = fileTree("${layout.buildDirectory.get()}/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes") {
         exclude(fileFilter)
     }
+    val javaClasses = fileTree("${layout.buildDirectory.get()}/intermediates/javac/debug/compileDebugJavaWithJavac/classes") {
+        exclude(fileFilter)
+    }
+
     val mainSrc = "${projectDir}/src/main/java"
 
     sourceDirectories.setFrom(files(mainSrc))
-    classDirectories.setFrom(files(debugTree))
+    classDirectories.setFrom(files(kotlinClasses, javaClasses))
     executionData.setFrom(fileTree(layout.buildDirectory.get()) {
         include("**/*.exec", "**/*.ec")
     })
