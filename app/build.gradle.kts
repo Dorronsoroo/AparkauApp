@@ -4,8 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlinx.kover")
-    id("org.jetbrains.kotlinx.kover") version "0.8.3"
+
 }
 
 android {
