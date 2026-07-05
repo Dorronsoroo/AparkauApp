@@ -198,4 +198,3 @@ class MiCuentaViewModelTest {
         assertEquals(AparkauRoutes.HOME_SCREEN, popUp)
     }
 }
-
