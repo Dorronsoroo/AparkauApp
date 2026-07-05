@@ -78,18 +78,17 @@ jobs:
     - name: Dar permisos a gradlew
       run: chmod +x ./gradlew
 
-    # SOLUCIÓN: Separamos en dos líneas para asegurar que Kover recopile los tests ya ejecutados
+    # Separamos en dos líneas para asegurar que Kover recopile los tests ya ejecutados
     - name: Ejecutar Tests y Generar Reporte de Cobertura (Kover)
       run: |
         ./gradlew testDebugUnitTest
         ./gradlew koverXmlReport
 
-    # SOLUCIÓN 2: Usamos el comodín `**/` para asegurar que Sonar encuentre el XML en cualquier subcarpeta
+    # CORREGIDO: Eliminamos el -Dsonar.coverage.jacoco.xmlReportPaths para que Sonar 
+    # use obligatoriamente la ruta que definiste en tu archivo build.gradle
     - name: Ejecutar análisis de Sonar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        ./gradlew sonar \
-          -Dsonar.coverage.jacoco.xmlReportPaths=**/build/reports/kover/report.xml \
-          --info
+        ./gradlew sonar --info
