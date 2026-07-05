@@ -1,27 +1,22 @@
 name: Android CI (Build, Test & Sonar)
-
 on:
   push:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
-
 jobs:
   build-and-test:
     name: Build & Unit Tests
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
-
     - name: Configurar JDK 21 (Requerido para AGP 9.x)
       uses: actions/setup-java@v4
       with:
         java-version: '21' 
         distribution: 'temurin'
         cache: gradle
-
     - name: Inyectar google-services.json (Firebase)
       env:
         GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
@@ -31,22 +26,17 @@ jobs:
         else
           echo "No se encontró el secreto GOOGLE_SERVICES_JSON_BASE64. Saltando paso."
         fi
-
     - name: Dar permisos a gradlew
       run: chmod +x ./gradlew
-
     - name: Ejecutar Tests Unitarios
       run: ./gradlew testDebugUnitTest
-
     - name: Compilar la aplicación (Debug APK)
       run: ./gradlew assembleDebug
-
     - name: Subir APK como artefacto
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
-
   # --- JOB DE SONAR CORREGIDO ---
   sonar:
     name: Sonar Analysis
@@ -59,14 +49,12 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  
-
     - name: Configurar JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: gradle
-
     - name: Inyectar google-services.json (Firebase)
       env:
         GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
@@ -74,16 +62,26 @@ jobs:
         if [ -n "$GOOGLE_SERVICES_JSON" ]; then
           echo $GOOGLE_SERVICES_JSON | base64 -d > app/google-services.json
         fi
-
     - name: Dar permisos a gradlew
       run: chmod +x ./gradlew
-
     # Separamos en dos líneas para asegurar que Kover recopile los tests ya ejecutados
     - name: Ejecutar Tests y Generar Reporte de Cobertura (Kover)
       run: |
         ./gradlew testDebugUnitTest
         ./gradlew koverXmlReport
-
+    # --- DIAGNÓSTICO: ver qué contiene realmente el XML de Kover ---
+    - name: Ver contenido real del XML de Kover
+      run: |
+        echo "=== ¿existen los archivos? ==="
+        ls -la build/reports/kover/report.xml app/build/reports/kover/report.xml 2>/dev/null || echo "falta alguno"
+        echo "=== nº de clases en report raiz ==="
+        grep -c "<class" build/reports/kover/report.xml 2>/dev/null || echo "sin archivo raiz"
+        echo "=== líneas cubiertas (covered) en report raiz ==="
+        grep -o 'covered="[0-9]*"' build/reports/kover/report.xml 2>/dev/null | sort | uniq -c || echo "sin datos"
+        echo "=== tareas kover disponibles ==="
+        ./gradlew tasks --all | grep -i koverXml || echo "sin tareas kover"
+        echo "=== primeros 600 chars ==="
+        head -c 600 build/reports/kover/report.xml 2>/dev/null || echo "sin archivo"
     # CORREGIDO: Eliminamos el -Dsonar.coverage.jacoco.xmlReportPaths para que Sonar 
     # use obligatoriamente la ruta que definiste en tu archivo build.gradle
     - name: Ejecutar análisis de Sonar
