@@ -98,5 +98,11 @@ dependencies {
 
 
 }
-
+kover {
+    currentProject {
+        createVariant("coverage") {
+            add("debug")
+        }
+    }
+}
 
