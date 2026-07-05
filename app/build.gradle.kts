@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
-    id("org.jetbrains.kotlinx.kover")  
+    jacoco
 
 
 }
@@ -100,4 +100,37 @@ dependencies {
 }
 tasks.named("koverXmlReport") {
     dependsOn("testDebugUnitTest")
+
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class", "**/R\$*.class", "**/BuildConfig.*", "**/Manifest*.*",
+        "**/*Test*.*", "android/**/*.*",
+        // Generados por Hilt/Dagger
+        "**/*_Hilt*.*", "**/hilt_aggregated_deps/**", "**/*_Factory.*",
+        "**/*_MembersInjector.*", "**/Dagger*.*", "**/*Module_*.*",
+        "**/*_Impl.*"
+    )
+
+    val debugTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+    val mainSrc = "${projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(fileTree(layout.buildDirectory.get()) {
+        include("**/*.exec", "**/*.ec")
+    })
 }
