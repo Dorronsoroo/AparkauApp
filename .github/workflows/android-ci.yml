@@ -51,7 +51,7 @@ jobs:
   sonar:
     name: Sonar Analysis
     runs-on: ubuntu-latest
-    # Forzamos a que termine el build primero, aunque realmente este job volverá a compilar
+    # Forzamos a que termine el build primero
     needs: build-and-test 
     
     steps:
@@ -78,17 +78,18 @@ jobs:
     - name: Dar permisos a gradlew
       run: chmod +x ./gradlew
 
-    # CAMBIO CRÍTICO: Primero corremos los tests unitarios y LUEGO generamos el reporte de Kover
-    # en la misma máquina virtual.
+    # SOLUCIÓN: Separamos en dos líneas para asegurar que Kover recopile los tests ya ejecutados
     - name: Ejecutar Tests y Generar Reporte de Cobertura (Kover)
-      run: ./gradlew testDebugUnitTest koverXmlReport
+      run: |
+        ./gradlew testDebugUnitTest
+        ./gradlew koverXmlReport
 
-    # CAMBIO CRÍTICO 2: Pasamos la ruta del XML de Kover a Sonar mediante parámetros de línea de comandos
+    # SOLUCIÓN 2: Usamos el comodín `**/` para asegurar que Sonar encuentre el XML en cualquier subcarpeta
     - name: Ejecutar análisis de Sonar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         ./gradlew sonar \
-          -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/kover/report.xml \
+          -Dsonar.coverage.jacoco.xmlReportPaths=**/build/reports/kover/report.xml \
           --info
