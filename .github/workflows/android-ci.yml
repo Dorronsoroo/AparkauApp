@@ -71,6 +71,15 @@ jobs:
       run: |
         find . -path "*jacoco*" -name "*.xml" -exec ls -la {} \;
         find . -path "*jacoco*" -name "jacocoTestReport.xml" -exec grep -c "<class" {} \;
+    - name: Diagnóstico JaCoCo
+      run: |
+        echo "=== .exec / .ec ==="
+        find . -name "*.exec" 2>/dev/null
+        find . -name "*.ec" 2>/dev/null
+        echo "=== carpetas classes en app/build ==="
+        find app/build -type d -name "*classes*" 2>/dev/null
+        echo "=== kotlin-classes debug ==="
+        ls -la app/build/tmp/kotlin-classes/debug/ 2>/dev/null || echo "NO existe esa carpeta"
     - name: Ejecutar análisis de Sonar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
