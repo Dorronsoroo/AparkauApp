@@ -40,6 +40,12 @@ android {
     buildFeatures {
         compose = true
     }
+    testOptions {
+        unitTests {
+            // Evita que las APIs de Android lancen errores en tests unitarios (JVM)
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -53,6 +59,12 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.text.google.fonts)
     testImplementation(libs.junit)
+    // MockK: librería para crear mocks/fakes de interfaces y clases en tests
+    testImplementation("io.mockk:mockk:1.14.11")
+    // Coroutines Test: utilidades para testear código con suspend/coroutines
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    // Architecture Core Testing: InstantTaskExecutorRule para LiveData/StateFlow
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
