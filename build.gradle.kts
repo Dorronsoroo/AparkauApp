@@ -16,5 +16,6 @@ sonarqube {
         property("sonar.projectKey", "dorronsoroo_aparkauapp")
         property("sonar.organization", "dorronsoroo")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/app/build/reports/kover/reportDebug.xml")
     }
 }
