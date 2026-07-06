@@ -17,9 +17,9 @@ sonarqube {
         property("sonar.organization", "dorronsoroo")
         property("sonar.host.url", "https://sonarcloud.io")
         
-        property(
+    property(
         "sonar.coverage.jacoco.xmlReportPaths",
-        "${project.projectDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-        ) 
+        "${project.rootDir}/app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+        )     
     }
 }
