@@ -204,4 +204,3 @@ class MisCochesViewModelTest {
         assertEquals(AparkauRoutes.MIS_COCHES_SCREEN, popUp)
     }
 }
-
