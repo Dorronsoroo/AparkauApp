@@ -18,8 +18,8 @@ sonarqube {
         property("sonar.host.url", "https://sonarcloud.io")
         
         property(
-            "sonar.coverage.jacoco.xmlReportPaths",
-            "${project.rootDir}/app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-        )
+            "sonar.coverage.jacoco.xmlReportPaths", 
+            "${project.projectDir}/build/reports/kover/report.xml,${project.rootDir}/app/build/reports/kover/report.xml"
+        )   
     }
 }
