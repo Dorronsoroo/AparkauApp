@@ -6,4 +6,20 @@ plugins {
     id("com.google.gms.google-services") version "4.5.0" apply false
     id("com.google.dagger.hilt.android") version "2.60" apply false
 
+    id("org.sonarqube") version "7.3.1.8318"
+
+
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "dorronsoroo_aparkauapp")
+        property("sonar.organization", "dorronsoroo")
+        property("sonar.host.url", "https://sonarcloud.io")
+        
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${project.rootDir}/app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+        )
+    }
 }
