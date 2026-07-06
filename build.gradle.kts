@@ -19,7 +19,7 @@ sonarqube {
         
         property(
         "sonar.coverage.jacoco.xmlReportPaths",
-        "${project.projectDir}/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
+        "${project.rootDir}/app
         ) 
     }
 }
